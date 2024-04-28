@@ -21,3 +21,9 @@ def get_video_details(youtube, video_id):
         return video
     else:
         return None
+
+if __name__ == "__main__":
+    'https://www.youtube.com/watch?v=pOaQ4IZ6y00&ab_channel=PatrickBoyle'
+    youtube = create_youtube_client()
+    video = get_video_details(youtube, 'LMsiWvUc9bI')
+    print(video)

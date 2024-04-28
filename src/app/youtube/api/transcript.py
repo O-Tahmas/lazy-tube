@@ -1,12 +1,21 @@
 import requests
-from app.youtube.youtube_api import create_youtube_client, get_video_details
+from urllib.parse import urlparse, parse_qs
+from youtube_api import create_youtube_client, get_video_details
+
 
 def get_video_id_from_link(link):
-    # Extract the video ID from the YouTube video link
-    video_id = link.split('v=')[1]
-    return video_id
+    # Parse the URL and query parameters
+    parsed_url = urlparse(link)
+    query_params = parse_qs(parsed_url.query)
+    # Extract the video ID using the 'v' query parameter
+    video_id = query_params.get('v')
+    if video_id:
+        return video_id[0]
+    return None
+
 
 def get_video_transcript(video_id):
+    # from the api module get the youtube obj
     youtube = create_youtube_client()
     video = get_video_details(youtube, video_id)
 
@@ -24,10 +33,13 @@ def get_video_transcript(video_id):
             print('No captions available for this video.')
     else:
         print('Video not found.')
-
     return None
 
 def get_transcript_from_link(link):
     video_id = get_video_id_from_link(link)
     transcript = get_video_transcript(video_id)
     return transcript
+
+
+if __name__ == '__main__':
+    pass
