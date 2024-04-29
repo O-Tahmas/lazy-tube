@@ -1,7 +1,5 @@
-import requests
 import validators
 from urllib.parse import urlparse, parse_qs
-from youtube_api import create_youtube_client, get_video_details
 from youtube_transcript_api import YouTubeTranscriptApi
 
 
@@ -25,23 +23,14 @@ def get_video_id_from_link(link):
     return None
 
 
-def get_captions(youtube, video_id):
-    # First, check for available captions
-    captions_list = youtube.captions().list(part='id', videoId=video_id).execute()
-    if captions_list['items']:
-        # Assuming you want the first available caption
-        caption_id = captions_list['items'][0]['id']
-        # Downloading the caption
-        caption_download = youtube.captions().download(id=caption_id).execute()
-        return caption_download
-    else:
-        print("No captions found.")
-        return None
-
+def get_captions(link):
+    video_id = get_video_id_from_link(link)
+    # Utilizing the `youtube_transcript_api` package
+    return YouTubeTranscriptApi.get_transcript(video_id)
 
 
 
 if __name__ == '__main__':
     test_link = 'https://www.youtube.com/watch?v=Xg9ihH15Uto&ab_channel=Fireship'
     test_id = 'Xg9ihH15Uto'
-    print(YouTubeTranscriptApi.get_transcript(test_id))
+    print(get_captions(test_link))
