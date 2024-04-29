@@ -23,7 +23,6 @@ def get_video_details(youtube, video_id):
         return None
 
 if __name__ == "__main__":
-    'https://www.youtube.com/watch?v=pOaQ4IZ6y00&ab_channel=PatrickBoyle'
+    test_link = 'https://www.youtube.com/watch?v=Xg9ihH15Uto&ab_channel=Fireship'
     youtube = create_youtube_client()
-    video = get_video_details(youtube, 'LMsiWvUc9bI')
-    print(video)
+    print(get_video_details(youtube,'Xg9ihH15Uto'))
