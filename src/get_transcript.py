@@ -53,12 +53,3 @@ def get_captions(link):
         return YouTubeTranscriptApi.get_transcript(video_id)
     except CouldNotRetrieveTranscript as e:
         raise CouldNotRetrieveTranscript(f"No transcript available for video ID {video_id}: {str(e)}")
-
-# Temporary - test in main block
-if __name__ == "__main__":
-    try:
-        link = 'https://www.youtube.com/watch?v=synJZAtH58E&ab_channel=JomaTech'
-        txt = get_captions(link)
-        print(txt)
-    except Exception as e:
-        print(f"Error: {e}")
