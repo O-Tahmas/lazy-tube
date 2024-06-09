@@ -1,6 +1,6 @@
 import validators
 from urllib.parse import urlparse, parse_qs
-from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api import YouTubeTranscriptApi, CouldNotRetrieveTranscript
 
 def get_video_id_from_link(link):
     """
@@ -15,22 +15,20 @@ def get_video_id_from_link(link):
     Raises:
         ValueError: If the URL is not valid or it's not a YouTube URL.
     """
-    # Validate if it is a proper URL
     if not validators.url(link):
         raise ValueError("The input is not a valid URL.")
 
-    # Ensure the URL is a YouTube link
-    if 'youtube' not in link:
+    if 'youtube' not in link and 'youtu.be' not in link:
         raise ValueError('Please input a valid YouTube link.')
 
-    # Parse the URL and extract query parameters
     parsed_url = urlparse(link)
     query_params = parse_qs(parsed_url.query)
 
-    # Extract and return the video ID using the 'v' query parameter
     video_id = query_params.get('v')
     if video_id:
         return video_id[0]
+    elif 'youtu.be' in parsed_url.hostname:
+        return parsed_url.path.lstrip('/')
     return None
 
 def get_captions(link):
@@ -48,10 +46,19 @@ def get_captions(link):
         YouTubeTranscriptApi.CouldNotRetrieveTranscript: If no transcript is available for the video or an error occurs in the API.
     """
     video_id = get_video_id_from_link(link)
-    # Utilize the youtube_transcript_api package to fetch the transcript
+    if not video_id:
+        raise ValueError("Unable to extract video ID from the provided link.")
+    
     try:
-        transcript = YouTubeTranscriptApi.get_transcript(video_id)
-        return transcript
-    except YouTubeTranscriptApi.CouldNotRetrieveTranscript as e:
-        raise YouTubeTranscriptApi.CouldNotRetrieveTranscript(f"No transcript available for video ID {video_id}: {str(e)}")
+        return YouTubeTranscriptApi.get_transcript(video_id)
+    except CouldNotRetrieveTranscript as e:
+        raise CouldNotRetrieveTranscript(f"No transcript available for video ID {video_id}: {str(e)}")
 
+# Temporary - test in main block
+if __name__ == "__main__":
+    try:
+        link = 'https://www.youtube.com/watch?v=synJZAtH58E&ab_channel=JomaTech'
+        txt = get_captions(link)
+        print(txt)
+    except Exception as e:
+        print(f"Error: {e}")
