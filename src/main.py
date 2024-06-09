@@ -3,6 +3,11 @@ from get_transcript import get_captions
 from gemini_api import generate, ask_question
 
 def main():
+    """
+    Main function to process YouTube video URL, fetch its transcript,
+    summarize it using Gemini API, and allow user to ask follow-up questions.
+    """
+    # Ensure correct number of arguments are passed
     if len(sys.argv) != 5:
         print("Usage: python main.py <YouTube URL> <Project Name> <Location> <Model Choice>")
         sys.exit(1)
@@ -13,10 +18,9 @@ def main():
     model_choice = sys.argv[4]
 
     try:
-        # Get the captions (transcript) from the YouTube video
+        # Fetch the transcript from the YouTube video
         captions = get_captions(youtube_url)
         transcript = " ".join([entry['text'] for entry in captions])
-        print("Transcript:\n", transcript)
 
         # Summarize the transcript using the Gemini API
         print("\nSummary:")
